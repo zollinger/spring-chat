@@ -1,9 +1,13 @@
 package ch.bitwise.chat.security;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
+@Getter
+@Setter
 public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 
     private String token;
@@ -12,14 +16,6 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
     public JwtAuthenticationToken(UserDetails principle ) {
         super( principle.getAuthorities() );
         this.principle = principle;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken( String token ) {
-        this.token = token;
     }
 
     @Override

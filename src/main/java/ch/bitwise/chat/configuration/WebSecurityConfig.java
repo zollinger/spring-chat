@@ -3,7 +3,7 @@ package ch.bitwise.chat.configuration;
 import ch.bitwise.chat.security.JwtHelper;
 import ch.bitwise.chat.security.RestAuthenticationEntryPoint;
 import ch.bitwise.chat.security.JwtAuthenticationFilter;
-import ch.bitwise.chat.service.impl.CustomUserDetailsService;
+import ch.bitwise.chat.service.CustomUserDetailsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

@@ -2,8 +2,7 @@ package ch.bitwise.chat.configuration;
 
 import ch.bitwise.chat.security.JwtAuthenticationToken;
 import ch.bitwise.chat.security.JwtHelper;
-import ch.bitwise.chat.service.impl.CustomUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import ch.bitwise.chat.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.messaging.Message;
@@ -14,7 +13,6 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptorAdapter;
 import org.springframework.messaging.support.MessageHeaderAccessor;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -29,14 +27,15 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 @Order(HIGHEST_PRECEDENCE + 50)
 public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
-    @Autowired
     private JwtHelper jwtHelper;
 
-    @Autowired
     private CustomUserDetailsService userDetailsService;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    public WebSocketConfig(JwtHelper jwtHelper,
+                           CustomUserDetailsService userDetailsService) {
+        this.jwtHelper = jwtHelper;
+        this.userDetailsService = userDetailsService;
+    }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
@@ -51,31 +50,29 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
                 .withSockJS();
     }
 
-
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(new ChannelInterceptorAdapter() {
 
             @Override
             public Message<?> preSend(Message<?> message, MessageChannel channel) {
-
                 StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+                List tokenList = accessor.getNativeHeader(jwtHelper.TOKEN_HEADER);
+                String token;
 
-                if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-                    List tokenList = accessor.getNativeHeader("Authentication");
-                    String token;
-                    if (tokenList != null && tokenList.size() > 0) {
-                        token = (String) tokenList.get(0);
-                        String userName = jwtHelper.getUsernameFromToken(token);
+                if (!StompCommand.CONNECT.equals(accessor.getCommand()) || tokenList == null || tokenList.size() < 1) {
+                    return message;
+                }
 
-                        UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
-                        if (jwtHelper.validateToken(token, userDetails)) {
-                            JwtAuthenticationToken authentication = new JwtAuthenticationToken(userDetails);
-                            authentication.setToken(token);
+                token = (String) tokenList.get(0);
+                String userName = jwtHelper.getUsernameFromToken(token);
 
-                            accessor.setUser(authentication);
-                        }
-                    }
+                UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
+                if (jwtHelper.validateToken(token, userDetails)) {
+                    JwtAuthenticationToken authentication = new JwtAuthenticationToken(userDetails);
+                    authentication.setToken(token);
+
+                    accessor.setUser(authentication);
                 }
 
                 return message;

@@ -3,13 +3,12 @@
   <component name="FacetManager">
     <facet type="Spring" name="Spring">
       <configuration>
-        <fileset id="fileset" name="Spring Application Context" removed="false">
-          <file>file://$MODULE_DIR$/src/main/java/ch/bitwise/Main.java</file>
-          <file>file://$MODULE_DIR$/src/main/java/ch/bitwise/configuration/SpringRootConfig.java</file>
-          <file>file://$MODULE_DIR$/src/main/java/ch/bitwise/configuration/WebMvcConfig.java</file>
-          <file>file://$MODULE_DIR$/src/main/java/ch/bitwise/configuration/WebSecurityConfig.java</file>
-          <file>file://$MODULE_DIR$/src/main/java/ch/bitwise/configuration/WebSocketConfig.java</file>
-          <file>file://$MODULE_DIR$/src/main/java/ch/bitwise/configuration/WebsocketSecurityConfig.java</file>
+        <fileset id="fileset2" name="Spring Application Context (2)" removed="false">
+          <file>file://$MODULE_DIR$/src/main/java/ch/bitwise/chat/Main.java</file>
+          <file>file://$MODULE_DIR$/src/main/java/ch/bitwise/chat/configuration/WebMvcConfig.java</file>
+          <file>file://$MODULE_DIR$/src/main/java/ch/bitwise/chat/configuration/WebSecurityConfig.java</file>
+          <file>file://$MODULE_DIR$/src/main/java/ch/bitwise/chat/configuration/WebSocketConfig.java</file>
+          <file>file://$MODULE_DIR$/src/main/java/ch/bitwise/chat/configuration/WebsocketSecurityConfig.java</file>
         </fileset>
       </configuration>
     </facet>

@@ -23,7 +23,7 @@ public class JwtHelper {
     public int EXPIRES;
 
     @Value("${app.token.header}")
-    private String TOKEN_HEADER;
+    public String TOKEN_HEADER;
 
     private SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
 
@@ -94,7 +94,7 @@ public class JwtHelper {
         );
     }
 
-    public String getAuthHeaderFromHeader( HttpServletRequest request ) {
+    public String getAuthTokenFromHeader( HttpServletRequest request ) {
         return request.getHeader(TOKEN_HEADER);
     }
 
